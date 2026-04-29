@@ -1,0 +1,52 @@
+discourse_resonite_oauth:
+  resonite_oauth_enabled:
+    default: false
+    area: "resonite"
+  resonite_oauth_discovery_document_url:
+    default: ""
+    area: "resonite"
+  resonite_oauth_client_id:
+    default: ""
+    area: "resonite"
+  resonite_oauth_client_secret:
+    default: ""
+    secret: true
+    area: "resonite"
+  resonite_oauth_authorize_scope:
+    default: "openid profile email offline_access"
+    area: "resonite"
+  resonite_oauth_use_pkce:
+    default: true
+    area: "resonite"
+  resonite_oauth_profile_api_url:
+    default: "https://account.resonite.com/api/user/profile"
+    area: "resonite"
+  resonite_oauth_assets_base_url:
+    default: "https://assets.resonite.com"
+    area: "resonite"
+  resonite_oauth_rp_initiated_logout:
+    default: false
+    area: "resonite"
+  resonite_oauth_rp_initiated_logout_redirect:
+    default: ""
+    area: "resonite"
+  resonite_oauth_rp_initiated_logout_include_client_id:
+    default: false
+    area: "resonite"
+  resonite_oauth_allow_association_change:
+    default: false
+    area: "resonite"
+  resonite_oauth_overrides_email:
+    default: false
+    area: "resonite"
+  resonite_oauth_verbose_logging:
+    default: false
+    area: "resonite"
+  resonite_oauth_error_redirects:
+    default: ""
+    type: list
+    list_type: secret
+    area: "resonite"
+  resonite_oauth_match_by_email:
+    default: true
+    area: "resonite"

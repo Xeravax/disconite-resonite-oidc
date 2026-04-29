@@ -1,0 +1,26 @@
+# WARNING: Never edit this file.
+# It will be overwritten when translations are pulled from Crowdin.
+#
+# To work with us on translations, join this project:
+# https://translate.discourse.org/
+
+de:
+  site_settings:
+    resonite_oauth_enabled: Aktiviere die OpenID-Connect-Authentifizierung. Passe den Text der Benutzeroberfläche <a href='%{base_path}/admin/customize/site_texts?q=js.login.resonite'>hier</a> an
+    resonite_oauth_discovery_document_url: "URL des OpenID-Connect-Discovery-Dokuments. Normalerweise zu finden unter „https://your.domain/.well-known/openid-configuration“"
+    resonite_oauth_client_id: "OpenID-Connect-Client-ID"
+    resonite_oauth_client_secret: "OpenID-Connect-Client-Geheimnis"
+    resonite_oauth_authorize_scope: "Die Bereiche, die an den Autorisierungsendpunkt gesendet werden. Muss „openid“ enthalten."
+    resonite_oauth_rp_initiated_logout: "Leitet den Benutzer nach der Abmeldung zum end_session_endpoint um. Muss von deinem Identitätsanbieter unterstützt werden und im Discovery-Dokument enthalten sein."
+    resonite_oauth_rp_initiated_logout_redirect: "(Optional) Die post_logout_redirect_uri, die an den Abmeldungsendpunkt übergeben wird. Wenn sie angegeben wird, muss sie beim Identitätsanbieter registriert sein."
+    resonite_oauth_rp_initiated_logout_include_client_id: "(optional) Füge die client_id (Einstellung resonite_oauth_client_id) als Abfrageparameter an den Logout-Endpunkt an"
+    resonite_oauth_error_redirects: "Wenn der Callback error_reason den ersten Parameter enthält, wird der Benutzer zu der URL im zweiten Parameter umgeleitet"
+    resonite_oauth_allow_association_change: "Erlaube es Benutzern, ihre Discourse-Konten vom OpenID-Connect-Anbieter zu trennen und wieder mit diesem zu verbinden"
+    resonite_oauth_verbose_logging: "Protokolliere detaillierte openid-connect-Authentifizierungsinformationen in `/logs`. Bei normalem Gebrauch deaktiviert lassen."
+    resonite_oauth_overrides_email: "Überschreibe bei jeder Anmeldung die E-Mail-Adresse des Benutzers mit dem openid-connect-Wert. Funktioniert genauso wie die Einstellung `auth_overrides_email`, gilt aber spezifisch für OpenID-Connect-Anmeldungen."
+    resonite_oauth_match_by_email: "Verwende eine E-Mail-Adresse, um OpenID Connect-Authentifizierungen mit bestehenden Discourse-Benutzerkonten abzugleichen."
+    resonite_oauth_use_pkce: "Proof Key for Code Exchange (PKCE) für „OpenID Connect“-Authentifizierung aktivieren."
+  login:
+    omniauth_error:
+      resonite_oauth_discovery_error: Konfiguration kann nicht vom Identitätsanbieter abgerufen werden. Bitte versuche es erneut.
+

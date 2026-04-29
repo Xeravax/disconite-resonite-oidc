@@ -1,0 +1,17 @@
+en:
+  admin_js:
+    admin:
+      site_settings:
+        categories:
+          discourse_resonite_oauth: "Resonite OAuth"
+      config:
+        login:
+          sub_pages:
+            resonite: "Resonite"
+
+  js:
+    login:
+      resonite:
+        name: "Resonite"
+        title: "with Resonite"
+        message: "Authenticating with Resonite"

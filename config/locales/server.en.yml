@@ -1,0 +1,23 @@
+en:
+  site_settings:
+    resonite_oauth_enabled: Enable Resonite account login. Customize user interface text <a href='%{base_path}/admin/customize/site_texts?q=js.login.resonite'>here</a>
+    resonite_oauth_discovery_document_url: "Optional override for the OpenID discovery document. Leave blank to use https://account.resonite.com/.well-known/openid-configuration"
+    resonite_oauth_client_id: "OAuth client ID from your Resonite-registered application"
+    resonite_oauth_client_secret: "OAuth client secret from your Resonite-registered application"
+    resonite_oauth_authorize_scope: "Scopes sent to the authorize endpoint. Must include openid, profile, and email for full profile sync (see Resonite wiki)."
+    resonite_oauth_use_pkce: "Use Proof Key for Code Exchange (PKCE). Required by Resonite (S256)."
+    resonite_oauth_profile_api_url: "User profile API URL (Bearer access token). Default matches Resonite wiki."
+    resonite_oauth_assets_base_url: "Base URL for converting resdb:///… avatar links to HTTPS (see Resonite API wiki)."
+    resonite_oauth_rp_initiated_logout: "After logout, redirect the user to the provider end_session endpoint (from discovery)."
+    resonite_oauth_rp_initiated_logout_redirect: "(optional) post_logout_redirect_uri passed to the logout endpoint. Must be registered with Resonite if set."
+    resonite_oauth_rp_initiated_logout_include_client_id: "(optional) Append client_id as a query parameter on the logout URL"
+    resonite_oauth_error_redirects: "If the callback error_description contains the first segment, redirect to the URL in the second segment (one pair per line, separated by |)"
+    resonite_oauth_allow_association_change: "Allow users to disconnect and reconnect their Discourse account from Resonite"
+    resonite_oauth_verbose_logging: "Log detailed Resonite OAuth traffic to /logs. Keep disabled in production."
+    resonite_oauth_overrides_email: "On every login, override the user's email from Resonite. Same idea as auth_overrides_email but only for this login method."
+    resonite_oauth_match_by_email: "Match Resonite logins to existing Discourse accounts by email address."
+  login:
+    omniauth_error:
+      # Base OmniAuth strategy still reports this symbol on discovery failures
+      openid_connect_discovery_error: Unable to fetch configuration from Resonite. Please try again.
+      resonite_oauth_discovery_error: Unable to fetch configuration from Resonite. Please try again.
