@@ -83,8 +83,133 @@ describe ResoniteOAuthAuthenticator do
     end
   end
 
-  it "does not sync groups" do
-    expect(authenticator.provides_groups?).to eq(false)
+  describe "group syncing (Resonite tags)" do
+    context "when resonite_oauth_groups_claim and active_supporter_group are blank" do
+      before do
+        SiteSetting.resonite_oauth_groups_claim = ""
+        SiteSetting.resonite_oauth_active_supporter_group = ""
+      end
+
+      it "does not provide groups" do
+        expect(authenticator.provides_groups?).to eq(false)
+      end
+
+      it "does not set associated_groups" do
+        hash[:extra][:raw_info]["tags"] = %w[mentor translator]
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to be_nil
+      end
+    end
+
+    context "when resonite_oauth_groups_claim is tags" do
+      before do
+        SiteSetting.resonite_oauth_groups_claim = "tags"
+        SiteSetting.resonite_oauth_active_supporter_group = ""
+      end
+
+      it "provides groups" do
+        expect(authenticator.provides_groups?).to eq(true)
+      end
+
+      it "maps tags to associated_groups" do
+        hash[:extra][:raw_info]["tags"] = %w[mentor translator]
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [{ id: "mentor", name: "mentor" }, { id: "translator", name: "translator" }],
+        )
+      end
+
+      it "handles custom badge style tag strings" do
+        hash[:extra][:raw_info]["tags"] = ["mentor", "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f"]
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [
+            { id: "mentor", name: "mentor" },
+            {
+              id: "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f",
+              name: "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f",
+            },
+          ],
+        )
+      end
+
+      it "handles an empty tags array" do
+        hash[:extra][:raw_info]["tags"] = []
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq([])
+      end
+
+      it "sets associated_groups to empty when the claim is missing" do
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq([])
+      end
+
+      it "logs an error when the claim is not an array" do
+        hash[:extra][:raw_info]["tags"] = "not_an_array"
+        Rails.logger.expects(:error).with(includes("not an array"))
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq([])
+      end
+    end
+
+    describe "active supporter group" do
+      before do
+        SiteSetting.resonite_oauth_groups_claim = ""
+        SiteSetting.resonite_oauth_active_supporter_group = "resonite-supporters"
+      end
+
+      it "provides groups when only supporter group is configured" do
+        expect(authenticator.provides_groups?).to eq(true)
+      end
+
+      it "adds the supporter group when isActiveSupporter is true" do
+        hash[:extra][:raw_info]["isActiveSupporter"] = true
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [{ id: "resonite-supporters", name: "resonite-supporters" }],
+        )
+      end
+
+      it "accepts string true for isActiveSupporter" do
+        hash[:extra][:raw_info]["isActiveSupporter"] = "true"
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [{ id: "resonite-supporters", name: "resonite-supporters" }],
+        )
+      end
+
+      it "does not add the group when isActiveSupporter is false" do
+        hash[:extra][:raw_info]["isActiveSupporter"] = false
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq([])
+      end
+
+      it "merges supporter group with tags when both are configured" do
+        SiteSetting.resonite_oauth_groups_claim = "tags"
+        hash[:extra][:raw_info]["tags"] = ["mentor"]
+        hash[:extra][:raw_info]["isActiveSupporter"] = true
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [
+            { id: "mentor", name: "mentor" },
+            { id: "resonite-supporters", name: "resonite-supporters" },
+          ],
+        )
+      end
+
+      it "does not duplicate if a tag matches the supporter group name" do
+        SiteSetting.resonite_oauth_groups_claim = "tags"
+        hash[:extra][:raw_info]["tags"] = %w[mentor resonite-supporters]
+        hash[:extra][:raw_info]["isActiveSupporter"] = true
+        result = authenticator.after_authenticate(hash)
+        expect(result.associated_groups).to eq(
+          [
+            { id: "mentor", name: "mentor" },
+            { id: "resonite-supporters", name: "resonite-supporters" },
+          ],
+        )
+      end
+    end
   end
 
   describe "discovery document fetching" do

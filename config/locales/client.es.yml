@@ -9,7 +9,7 @@ es:
     admin:
       site_settings:
         categories:
-          discourse_resonite_oauth: "OpenID Connect de Discourse"
+          disconite_resonite_oidc: "OpenID Connect de Discourse"
       config:
         login:
           sub_pages:

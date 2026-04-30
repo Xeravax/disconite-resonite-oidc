@@ -16,6 +16,8 @@ en:
     resonite_oauth_verbose_logging: "Log detailed Resonite OAuth traffic to /logs. Keep disabled in production."
     resonite_oauth_overrides_email: "On every login, override the user's email from Resonite. Same idea as auth_overrides_email but only for this login method."
     resonite_oauth_match_by_email: "Match Resonite logins to existing Discourse accounts by email address."
+    resonite_oauth_groups_claim: "Name of the claim on the merged auth payload used for Discourse group sync (array of strings). Resonite profile exposes user tags as **tags** (e.g. mentor, translator). Leave blank to disable tag-based group sync."
+    resonite_oauth_active_supporter_group: "Discourse group name to assign when the profile field **isActiveSupporter** is true (Resonite API). Leave blank to disable. The group should exist or Discourse will handle creation per your forum rules."
   login:
     omniauth_error:
       # Base OmniAuth strategy still reports this symbol on discovery failures

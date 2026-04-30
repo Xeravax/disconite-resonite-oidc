@@ -75,6 +75,8 @@ module OmniAuth
               "name" => profile["username"],
               "preferred_username" => profile["username"],
               "email_verified" => profile["isVerified"],
+              "isActiveSupporter" => profile["isActiveSupporter"],
+              "tags" => profile["tags"],
               "picture" =>
                 ResoniteAssetUrl.icon_https_url(
                   profile.dig("profile", "iconUrl"),

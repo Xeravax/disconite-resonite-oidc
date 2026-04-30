@@ -9,7 +9,7 @@ ru:
     admin:
       site_settings:
         categories:
-          discourse_resonite_oauth: "OpenID Connect для Discourse"
+          disconite_resonite_oidc: "OpenID Connect для Discourse"
   js:
     login:
       resonite:

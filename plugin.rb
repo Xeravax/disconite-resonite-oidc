@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# name: discourse-resonite-oauth
+# name: disconite-resonite-oidc
 # about: Log in with a Resonite account using OAuth 2.0 / OpenID Connect (account.resonite.com).
 # version: 2.0
 # authors: Disconite (Resonite fork; originally David Taylor / Discourse OpenID Connect)
@@ -8,7 +8,7 @@
 
 enabled_site_setting :resonite_oauth_enabled
 
-register_svg_icon "discourse-resonite-oauth"
+register_svg_icon "disconite-resonite-oidc"
 
 require_relative "lib/resonite_oauth_faraday_formatter"
 require_relative "lib/resonite_asset_url"

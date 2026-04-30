@@ -1,4 +1,4 @@
-discourse_resonite_oauth:
+disconite_resonite_oidc:
   resonite_oauth_enabled:
     default: false
     area: "resonite"
@@ -49,4 +49,10 @@ discourse_resonite_oauth:
     area: "resonite"
   resonite_oauth_match_by_email:
     default: true
+    area: "resonite"
+  resonite_oauth_groups_claim:
+    default: "tags"
+    area: "resonite"
+  resonite_oauth_active_supporter_group:
+    default: ""
     area: "resonite"

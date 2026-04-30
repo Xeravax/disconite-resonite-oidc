@@ -1,6 +1,6 @@
 import { withPluginApi } from "discourse/lib/plugin-api";
 
-const PLUGIN_ID = "discourse-resonite-oauth";
+const PLUGIN_ID = "disconite-resonite-oidc";
 
 export default {
   name: "resonite-oauth-admin-plugin-configuration-nav",
@@ -12,7 +12,7 @@ export default {
     }
 
     withPluginApi((api) => {
-      api.setAdminPluginIcon(PLUGIN_ID, "discourse-resonite-oauth");
+      api.setAdminPluginIcon(PLUGIN_ID, "disconite-resonite-oidc");
     });
   },
 };

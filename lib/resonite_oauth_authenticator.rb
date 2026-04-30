@@ -12,7 +12,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   end
 
   def icon
-    "discourse-resonite-oauth"
+    "disconite-resonite-oidc"
   end
 
   def can_revoke?
@@ -43,7 +43,41 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   end
 
   def provides_groups?
-    false
+    SiteSetting.resonite_oauth_groups_claim.present? ||
+      SiteSetting.resonite_oauth_active_supporter_group.present?
+  end
+
+  def after_authenticate(auth_token, existing_account: nil)
+    result = super
+
+    tag_sync = SiteSetting.resonite_oauth_groups_claim.present?
+    supporter_sync = SiteSetting.resonite_oauth_active_supporter_group.present?
+    return result if !tag_sync && !supporter_sync
+
+    raw = auth_token.extra&.dig(:raw_info)
+    matched = []
+
+    if tag_sync
+      claim = SiteSetting.resonite_oauth_groups_claim
+      groups = raw.is_a?(Hash) ? (raw[claim] || raw[claim.to_sym]) : nil
+
+      if groups.is_a?(Array)
+        matched.concat(groups.map { |group_name| { id: group_name, name: group_name } })
+      elsif groups.present?
+        resonite_oauth_log("groups claim '#{claim}' is not an array: #{groups.class}", error: true)
+      else
+        resonite_oauth_log("groups claim '#{claim}' not found in auth token")
+      end
+    end
+
+    if supporter_sync && raw.is_a?(Hash) &&
+         resonite_truthy?(raw["isActiveSupporter"] || raw[:isActiveSupporter])
+      g = SiteSetting.resonite_oauth_active_supporter_group
+      matched << { id: g, name: g } unless matched.any? { |e| e[:id] == g }
+    end
+
+    result.associated_groups = matched
+    result
   end
 
   def always_update_user_email?
@@ -178,5 +212,13 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
 
   def request_timeout_seconds
     GlobalSetting.resonite_oauth_request_timeout_seconds
+  end
+
+  private
+
+  def resonite_truthy?(value)
+    return false if value.nil?
+
+    value == true || (value.is_a?(String) && value.downcase == "true")
   end
 end

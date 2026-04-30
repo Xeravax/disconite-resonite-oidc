@@ -3,7 +3,7 @@ en:
     admin:
       site_settings:
         categories:
-          discourse_resonite_oauth: "Resonite OAuth"
+          disconite_resonite_oidc: "Resonite OAuth"
       config:
         login:
           sub_pages:
