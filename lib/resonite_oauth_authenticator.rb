@@ -55,6 +55,9 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     end
 
     result = super
+    # Auth::Result#apply_associated_attributes! resolves the authenticator by name.
+    # Ensure this is present so group-sync application is not skipped.
+    result.authenticator_name ||= name
 
     tag_sync = SiteSetting.resonite_oauth_groups_claim.present?
     supporter_sync = SiteSetting.resonite_oauth_active_supporter_group.present?

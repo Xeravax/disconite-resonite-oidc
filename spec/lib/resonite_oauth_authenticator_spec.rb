@@ -28,6 +28,11 @@ describe ResoniteOAuthAuthenticator do
 
       expect(result.user).to eq(user)
     end
+
+    it "sets authenticator_name to resonite" do
+      result = authenticator.after_authenticate(hash)
+      expect(result.authenticator_name).to eq("resonite")
+    end
   end
 
   context "when email_verified is true" do
