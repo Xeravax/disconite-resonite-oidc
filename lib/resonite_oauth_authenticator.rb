@@ -116,10 +116,16 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     end
 
     result.associated_groups = matched
+    ensure_group_membership_from_associated_groups(result.user, matched)
     resonite_oauth_log_group_sync(
       "STEP 3 result.associated_groups assigned count=#{matched.size}",
     ) if SiteSetting.resonite_oauth_debug_group_sync
     result
+  end
+
+  def after_create_account(user, auth_result)
+    super
+    ensure_group_membership_from_associated_groups(user, auth_result.associated_groups)
   end
 
   def always_update_user_email?
@@ -337,5 +343,34 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     return false if value.nil?
 
     value == true || (value.is_a?(String) && value.downcase == "true")
+  end
+
+  def ensure_group_membership_from_associated_groups(user, associated_groups)
+    return if user.blank? || associated_groups.blank?
+
+    associated_groups.each do |entry|
+      group_id = entry[:id] || entry["id"]
+      group_name = entry[:name] || entry["name"]
+      next if group_id.blank? || group_name.blank?
+
+      associated_group =
+        begin
+          AssociatedGroup.find_or_create_by(
+            name: group_name,
+            provider_id: group_id,
+            provider_name: name,
+          )
+        rescue ActiveRecord::RecordNotUnique
+          retry
+        end
+
+      associated_group.groups.each do |group|
+        group.add_automatically(user, subject: associated_group.label)
+      end
+    end
+
+    resonite_oauth_log_group_sync(
+      "STEP 4 enforced GroupUser membership for user_id=#{user.id}",
+    ) if SiteSetting.resonite_oauth_debug_group_sync
   end
 end

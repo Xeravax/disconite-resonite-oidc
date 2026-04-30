@@ -124,6 +124,27 @@ describe ResoniteOAuthAuthenticator do
         )
       end
 
+      it "reapplies GroupUser membership on login for existing users" do
+        group_name = "resonite-mentor-sync"
+        group = Fabricate(:group, name: group_name)
+        associated_group =
+          AssociatedGroup.find_or_create_by!(
+            provider_name: "resonite",
+            provider_id: group_name,
+          ) do |ag|
+            ag.name = group_name
+            ag.last_used = Time.zone.now
+          end
+        GroupAssociatedGroup.find_or_create_by!(group: group, associated_group: associated_group)
+        GroupUser.where(user_id: user.id, group_id: group.id).delete_all
+
+        hash[:extra][:raw_info]["tags"] = [group_name]
+        result = authenticator.after_authenticate(hash)
+
+        expect(result.user).to eq(user)
+        expect(GroupUser.exists?(user_id: user.id, group_id: group.id)).to eq(true)
+      end
+
       it "handles custom badge style tag strings" do
         hash[:extra][:raw_info]["tags"] = ["mentor", "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f"]
         result = authenticator.after_authenticate(hash)
