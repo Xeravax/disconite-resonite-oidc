@@ -12,7 +12,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   end
 
   def icon
-    "disconite-resonite-oidc"
+    "resonite"
   end
 
   def can_revoke?

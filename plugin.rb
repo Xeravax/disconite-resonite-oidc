@@ -9,6 +9,7 @@
 enabled_site_setting :resonite_oauth_enabled
 
 register_svg_icon "disconite-resonite-oidc"
+register_svg_icon "resonite"
 
 require_relative "lib/resonite_oauth_faraday_formatter"
 require_relative "lib/resonite_asset_url"

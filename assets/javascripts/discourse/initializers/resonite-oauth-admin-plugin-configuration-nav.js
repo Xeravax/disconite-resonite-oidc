@@ -12,7 +12,7 @@ export default {
     }
 
     withPluginApi((api) => {
-      api.setAdminPluginIcon(PLUGIN_ID, "disconite-resonite-oidc");
+      api.setAdminPluginIcon(PLUGIN_ID, "resonite");
     });
   },
 };
