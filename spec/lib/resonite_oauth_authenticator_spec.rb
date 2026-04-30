@@ -220,7 +220,7 @@ describe ResoniteOAuthAuthenticator do
       it "logs [group_sync] lines when enabled" do
         SiteSetting.resonite_oauth_debug_group_sync = true
         hash[:extra][:raw_info]["tags"] = %w[mentor]
-        Rails.logger.expects(:info).with(includes("[group_sync]")).at_least_once
+        Rails.logger.expects(:warn).with(includes("[group_sync]")).at_least_once
         authenticator.after_authenticate(hash)
       end
 
@@ -228,7 +228,7 @@ describe ResoniteOAuthAuthenticator do
         SiteSetting.resonite_oauth_debug_group_sync = true
         SiteSetting.resonite_oauth_groups_claim = ""
         SiteSetting.resonite_oauth_active_supporter_group = ""
-        Rails.logger.expects(:info).with(includes("Group sync disabled")).once
+        Rails.logger.expects(:warn).with(includes("STEP 2 sync bypassed")).once
         authenticator.after_authenticate(hash)
       end
     end

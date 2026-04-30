@@ -48,6 +48,12 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   end
 
   def after_authenticate(auth_token, existing_account: nil)
+    if SiteSetting.resonite_oauth_debug_group_sync
+      resonite_oauth_log_group_sync(
+        "STEP 1 after_authenticate start uid=#{auth_token['uid'].inspect} existing_account_id=#{existing_account&.user_id.inspect}",
+      )
+    end
+
     result = super
 
     tag_sync = SiteSetting.resonite_oauth_groups_claim.present?
@@ -55,7 +61,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
 
     if SiteSetting.resonite_oauth_debug_group_sync && !tag_sync && !supporter_sync
       resonite_oauth_log_group_sync(
-        "Group sync disabled: resonite_oauth_groups_claim and resonite_oauth_active_supporter_group are both blank.",
+        "STEP 2 sync bypassed: resonite_oauth_groups_claim and resonite_oauth_active_supporter_group are both blank.",
       )
       return result
     end
@@ -107,6 +113,9 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     end
 
     result.associated_groups = matched
+    resonite_oauth_log_group_sync(
+      "STEP 3 result.associated_groups assigned count=#{matched.size}",
+    ) if SiteSetting.resonite_oauth_debug_group_sync
     result
   end
 
@@ -163,7 +172,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   def resonite_oauth_log_group_sync(message)
     return if !SiteSetting.resonite_oauth_debug_group_sync
 
-    Rails.logger.info("Resonite OAuth [group_sync]: #{message}")
+    Rails.logger.warn("Resonite OAuth [group_sync]: #{message}")
   end
 
   def register_middleware(omniauth)
