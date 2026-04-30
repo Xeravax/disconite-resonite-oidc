@@ -210,6 +210,28 @@ describe ResoniteOAuthAuthenticator do
         )
       end
     end
+
+    describe "resonite_oauth_debug_group_sync" do
+      before do
+        SiteSetting.resonite_oauth_groups_claim = "tags"
+        SiteSetting.resonite_oauth_active_supporter_group = ""
+      end
+
+      it "logs [group_sync] lines when enabled" do
+        SiteSetting.resonite_oauth_debug_group_sync = true
+        hash[:extra][:raw_info]["tags"] = %w[mentor]
+        Rails.logger.expects(:info).with(includes("[group_sync]")).at_least_once
+        authenticator.after_authenticate(hash)
+      end
+
+      it "logs when both sync settings are blank and debug is enabled" do
+        SiteSetting.resonite_oauth_debug_group_sync = true
+        SiteSetting.resonite_oauth_groups_claim = ""
+        SiteSetting.resonite_oauth_active_supporter_group = ""
+        Rails.logger.expects(:info).with(includes("Group sync disabled")).once
+        authenticator.after_authenticate(hash)
+      end
+    end
   end
 
   describe "discovery document fetching" do

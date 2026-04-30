@@ -52,10 +52,21 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
 
     tag_sync = SiteSetting.resonite_oauth_groups_claim.present?
     supporter_sync = SiteSetting.resonite_oauth_active_supporter_group.present?
+
+    if SiteSetting.resonite_oauth_debug_group_sync && !tag_sync && !supporter_sync
+      resonite_oauth_log_group_sync(
+        "Group sync disabled: resonite_oauth_groups_claim and resonite_oauth_active_supporter_group are both blank.",
+      )
+      return result
+    end
+
     return result if !tag_sync && !supporter_sync
 
     raw = auth_token.extra&.dig(:raw_info)
     matched = []
+    claim = nil
+    groups = nil
+    supporter_appended = false
 
     if tag_sync
       claim = SiteSetting.resonite_oauth_groups_claim
@@ -70,10 +81,29 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
       end
     end
 
+    matched_before_supporter = matched.size
     if supporter_sync && raw.is_a?(Hash) &&
          resonite_truthy?(raw["isActiveSupporter"] || raw[:isActiveSupporter])
       g = SiteSetting.resonite_oauth_active_supporter_group
-      matched << { id: g, name: g } unless matched.any? { |e| e[:id] == g }
+      unless matched.any? { |e| e[:id] == g }
+        matched << { id: g, name: g }
+        supporter_appended = true
+      end
+    end
+
+    if SiteSetting.resonite_oauth_debug_group_sync
+      resonite_oauth_log_group_sync_debug(
+        auth_token,
+        result,
+        tag_sync: tag_sync,
+        supporter_sync: supporter_sync,
+        raw: raw,
+        claim: claim,
+        groups: groups,
+        matched: matched,
+        supporter_appended: supporter_appended,
+        matched_before_supporter: matched_before_supporter,
+      )
     end
 
     result.associated_groups = matched
@@ -128,6 +158,12 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     elsif SiteSetting.resonite_oauth_verbose_logging
       Rails.logger.warn("Resonite OAuth: #{message}")
     end
+  end
+
+  def resonite_oauth_log_group_sync(message)
+    return if !SiteSetting.resonite_oauth_debug_group_sync
+
+    Rails.logger.info("Resonite OAuth [group_sync]: #{message}")
   end
 
   def register_middleware(omniauth)
@@ -215,6 +251,75 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
   end
 
   private
+
+  def resonite_oauth_truncate_for_log(value, max = 120)
+    s = value.inspect
+    s.length > max ? "#{s[0, max]}...(truncated)" : s
+  end
+
+  def resonite_oauth_log_group_sync_debug(
+    auth_token,
+    result,
+    tag_sync:,
+    supporter_sync:,
+    raw:,
+    claim:,
+    groups:,
+    matched:,
+    supporter_appended:,
+    matched_before_supporter:
+  )
+    return if !SiteSetting.resonite_oauth_debug_group_sync
+
+    uid = auth_token["uid"]
+    resonite_oauth_log_group_sync(
+      "uid=#{uid.inspect} result.user_id=#{result.user&.id.inspect} result.authenticator_name=#{result.authenticator_name.inspect}",
+    )
+    resonite_oauth_log_group_sync(
+      "provides_groups?=#{provides_groups?} tag_sync=#{tag_sync} supporter_sync=#{supporter_sync}",
+    )
+
+    if tag_sync
+      raw_keys =
+        if raw.is_a?(Hash)
+          raw.keys.map(&:to_s).uniq.sort.join(",")
+        else
+          "(raw_info not a Hash: #{raw.class})"
+        end
+      resonite_oauth_log_group_sync("groups_claim=#{claim.inspect} raw_info_keys=[#{raw_keys}]")
+
+      if groups.nil?
+        resonite_oauth_log_group_sync("resolved claim: nil (missing or wrong key)")
+      else
+        resonite_oauth_log_group_sync(
+          "resolved claim: class=#{groups.class.name} array_length=#{groups.is_a?(Array) ? groups.size : 'n/a'}",
+        )
+        if groups.is_a?(Array)
+          groups.each_with_index do |entry, i|
+            resonite_oauth_log_group_sync(
+              "tag[#{i}] class=#{entry.class.name} value=#{resonite_oauth_truncate_for_log(entry)}",
+            )
+          end
+        end
+      end
+    end
+
+    if supporter_sync && raw.is_a?(Hash)
+      raw_sup = raw["isActiveSupporter"] || raw[:isActiveSupporter]
+      resonite_oauth_log_group_sync(
+        "isActiveSupporter raw=#{raw_sup.inspect} supporter_row_appended=#{supporter_appended} matched_size_before_supporter_branch=#{matched_before_supporter}",
+      )
+    elsif supporter_sync
+      resonite_oauth_log_group_sync("supporter_sync enabled but raw_info is not a Hash")
+    end
+
+    payload = matched.map { |h| h.stringify_keys }
+    resonite_oauth_log_group_sync("associated_groups payload (string keys)=#{payload.inspect}")
+
+    resonite_oauth_log_group_sync(
+      "Discourse matches group links on provider_name resonite and provider_id equal to each id; the group external id must match exactly (case-sensitive).",
+    )
+  end
 
   def resonite_truthy?(value)
     return false if value.nil?
