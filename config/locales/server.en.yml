@@ -14,7 +14,6 @@ en:
     resonite_oauth_error_redirects: "If the callback error_description contains the first segment, redirect to the URL in the second segment (one pair per line, separated by |)"
     resonite_oauth_allow_association_change: "Allow users to disconnect and reconnect their Discourse account from Resonite"
     resonite_oauth_verbose_logging: "Log detailed Resonite OAuth traffic to /logs. Keep disabled in production."
-    resonite_oauth_debug_group_sync: "Log group-sync diagnostics (tags / supporter → associated_groups) to /logs as **Resonite OAuth [group_sync]:**. Enable only while debugging; lines may include tag strings from user profiles."
     resonite_oauth_overrides_email: "On every login, override the user's email from Resonite. Same idea as auth_overrides_email but only for this login method."
     resonite_oauth_match_by_email: "Match Resonite logins to existing Discourse accounts by email address."
     resonite_oauth_groups_claim: "Name of the claim on the merged auth payload used for Discourse group sync (array of strings). Resonite profile exposes user tags as **tags** (e.g. mentor, translator). Leave blank to disable tag-based group sync."

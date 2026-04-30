@@ -42,9 +42,6 @@ disconite_resonite_oidc:
   resonite_oauth_verbose_logging:
     default: false
     area: "resonite"
-  resonite_oauth_debug_group_sync:
-    default: false
-    area: "resonite"
   resonite_oauth_error_redirects:
     default: ""
     type: list
