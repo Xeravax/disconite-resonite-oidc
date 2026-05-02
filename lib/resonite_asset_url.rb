@@ -16,7 +16,7 @@ module ResoniteAssetUrl
   def resdb_hash(icon_url)
     return unless icon_url.is_a?(String)
     return unless icon_url.start_with?("resdb:///")
-    rest = icon_url.sub(/\Aresdb:\/\/\//, "")
+    rest = icon_url.sub(%r{\Aresdb:///}, "")
     rest.split(".").first
   end
 end

@@ -36,8 +36,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
 
     return true if supplied.nil?
 
-    supplied == true ||
-      (supplied.is_a?(String) && supplied.downcase == "true")
+    supplied == true || (supplied.is_a?(String) && supplied.downcase == "true")
   end
 
   def provides_groups?
@@ -76,9 +75,7 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     if supporter_sync && raw.is_a?(Hash) &&
          resonite_truthy?(raw["isActiveSupporter"] || raw[:isActiveSupporter])
       g = SiteSetting.resonite_oauth_active_supporter_group
-      unless matched.any? { |e| e[:id] == g }
-        matched << { id: g, name: g }
-      end
+      matched << { id: g, name: g } unless matched.any? { |e| e[:id] == g }
     end
 
     result.associated_groups = matched
@@ -145,7 +142,9 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     profile_connection =
       lambda do |builder|
         if SiteSetting.resonite_oauth_verbose_logging
-          builder.response :logger, Rails.logger, { bodies: true, formatter: ResoniteOAuthFaradayFormatter }
+          builder.response :logger,
+                           Rails.logger,
+                           { bodies: true, formatter: ResoniteOAuthFaradayFormatter }
         end
         builder.request :url_encoded
         builder.adapter FinalDestination::FaradayAdapter
@@ -172,7 +171,8 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
                             client_secret: SiteSetting.resonite_oauth_client_secret,
                             discovery_document: discovery_document,
                             scope: SiteSetting.resonite_oauth_authorize_scope,
-                            token_params: {},
+                            token_params: {
+                            },
                             passthrough_authorize_options: [],
                             passthrough_token_options: [],
                             claims: nil,
@@ -204,7 +204,10 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
                             if SiteSetting.resonite_oauth_verbose_logging
                               builder.response :logger,
                                                Rails.logger,
-                                               { bodies: true, formatter: ResoniteOAuthFaradayFormatter }
+                                               {
+                                                 bodies: true,
+                                                 formatter: ResoniteOAuthFaradayFormatter,
+                                               }
                             end
 
                             builder.request :url_encoded
@@ -256,6 +259,5 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
         group.add_automatically(user, subject: associated_group.label)
       end
     end
-
   end
 end

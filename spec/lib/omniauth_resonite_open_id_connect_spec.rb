@@ -166,11 +166,7 @@ describe OmniAuth::Strategies::ResoniteOpenIDConnect do
 
         stub_request(:get, "https://account.resonite.com/api/user/profile").to_return(
           status: 200,
-          body: {
-            "username" => "U",
-            "email" => "u@example.com",
-            "isVerified" => true,
-          }.to_json,
+          body: { "username" => "U", "email" => "u@example.com", "isVerified" => true }.to_json,
           headers: {
             "Content-Type" => "application/json",
           },

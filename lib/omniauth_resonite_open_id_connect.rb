@@ -44,11 +44,16 @@ module OmniAuth
         @resonite_profile ||=
           begin
             url = options[:profile_endpoint].to_s
-            raise OmniAuth::OpenIDConnect::DiscoveryError.new("profile_endpoint is blank") if url.blank?
+            if url.blank?
+              raise OmniAuth::OpenIDConnect::DiscoveryError.new("profile_endpoint is blank")
+            end
 
             verbose_log("Fetching Resonite profile from #{url}")
             connection = profile_faraday_connection
-            body = connection.get(url) { |req| req.headers["Authorization"] = "Bearer #{access_token.token}" }.body
+            body =
+              connection
+                .get(url) { |req| req.headers["Authorization"] = "Bearer #{access_token.token}" }
+                .body
             parsed = JSON.parse(body)
             verbose_log("Resonite profile response\n\n#{parsed.to_yaml}")
             parsed
@@ -62,12 +67,7 @@ module OmniAuth
         @resonite_merged_raw_info ||=
           begin
             profile = resonite_profile
-            ui =
-              if options.use_userinfo
-                userinfo_response.stringify_keys
-              else
-                {}
-              end
+            ui = (options.use_userinfo ? userinfo_response.stringify_keys : {})
 
             ui.merge(
               "sub" => id_token_info["sub"],
@@ -102,9 +102,7 @@ module OmniAuth
         )
       end
 
-      extra do
-        prune!(id_token: access_token["id_token"], raw_info: resonite_merged_raw_info)
-      end
+      extra { prune!(id_token: access_token["id_token"], raw_info: resonite_merged_raw_info) }
 
       private
 

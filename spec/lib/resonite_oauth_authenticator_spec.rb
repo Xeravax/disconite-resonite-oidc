@@ -57,10 +57,7 @@ describe ResoniteOAuthAuthenticator do
 
   context "when isVerified from Resonite profile is used" do
     it "matches when isVerified is true" do
-      hash[:extra][:raw_info] = {
-        "email" => user.email,
-        "isVerified" => true,
-      }
+      hash[:extra][:raw_info] = { "email" => user.email, "isVerified" => true }
       result = authenticator.after_authenticate(hash)
       expect(result.user).to eq(user)
     end
@@ -146,7 +143,10 @@ describe ResoniteOAuthAuthenticator do
       end
 
       it "handles custom badge style tag strings" do
-        hash[:extra][:raw_info]["tags"] = ["mentor", "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f"]
+        hash[:extra][:raw_info]["tags"] = [
+          "mentor",
+          "custom badge:3f2b433508e038e3278f09eb3c3d6b4bb7c190da222b5c50500279a440a9575f",
+        ]
         result = authenticator.after_authenticate(hash)
         expect(result.associated_groups).to eq(
           [
@@ -236,7 +236,6 @@ describe ResoniteOAuthAuthenticator do
         )
       end
     end
-
   end
 
   describe "discovery document fetching" do
