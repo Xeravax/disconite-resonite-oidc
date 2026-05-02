@@ -25,17 +25,19 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
 
   def primary_email_verified?(auth)
     raw = auth["extra"]["raw_info"]
-    supplied_verified_boolean =
-      if raw.is_a?(Hash)
-        raw["email_verified"] || raw["isVerified"]
+    return true unless raw.is_a?(Hash)
+
+    supplied =
+      if raw.key?("email_verified") || raw.key?(:email_verified)
+        raw.key?("email_verified") ? raw["email_verified"] : raw[:email_verified]
+      elsif raw.key?("isVerified") || raw.key?(:isVerified)
+        raw.key?("isVerified") ? raw["isVerified"] : raw[:isVerified]
       end
 
-    if supplied_verified_boolean.nil?
-      true
-    else
-      supplied_verified_boolean == true ||
-        (supplied_verified_boolean.is_a?(String) && supplied_verified_boolean.downcase == "true")
-    end
+    return true if supplied.nil?
+
+    supplied == true ||
+      (supplied.is_a?(String) && supplied.downcase == "true")
   end
 
   def provides_groups?

@@ -31,12 +31,11 @@ describe OmniAuth::Strategies::ResoniteOpenIDConnect do
 
   def stub_callback_request!(strategy)
     strategy.stubs(:full_host).returns("https://example.com")
-    strategy.stubs(:request).returns(mock)
+    req = mock("request")
+    strategy.stubs(:request).returns(req)
+    req.stubs(:params).returns({})
     auth = strategy.authorize_params
-    strategy
-      .request
-      .stubs(:params)
-      .returns("state" => auth[:state], "code" => "supersecretcode")
+    req.stubs(:params).returns("state" => auth[:state], "code" => "supersecretcode")
     auth
   end
 

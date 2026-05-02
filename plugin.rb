@@ -43,7 +43,16 @@ on(:before_session_destroy) do |data|
     next
   end
 
-  end_session_endpoint = authenticator.discovery_document["end_session_endpoint"].presence
+  discovery = authenticator.discovery_document
+  if discovery.blank? || !discovery.is_a?(Hash)
+    authenticator.resonite_oauth_log(
+      "Logout: Discovery document unavailable",
+      error: true,
+    )
+    next
+  end
+
+  end_session_endpoint = discovery["end_session_endpoint"].presence
   if !end_session_endpoint
     authenticator.resonite_oauth_log "Logout: No end_session_endpoint found in discovery document",
                                      error: true
