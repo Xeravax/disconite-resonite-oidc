@@ -1,5 +1,16 @@
-// Resonite login button — brand gradient (style guide hues), softened for readability.
-// Base stops mixed with white for lighter, less saturated backgrounds; label stays high-contrast.
+// Resonite login button — card-like shape, animated gradient border (conic + @property).
+
+@property --resonite-oauth-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes resonite-oauth-border-spin {
+  to {
+    --resonite-oauth-angle: 360deg;
+  }
+}
 
 .btn-social.resonite {
   $resonite-blue: #61d1fa;
@@ -8,26 +19,36 @@
   $resonite-yellow: #f8f739;
   $resonite-green: #31eb34;
 
-  $soft: 48%;
-  $resonite-gradient: linear-gradient(
-    135deg,
-    mix(white, $resonite-blue, $soft) 0%,
-    mix(white, $resonite-purple, $soft) 22%,
-    mix(white, $resonite-red, $soft) 44%,
-    mix(white, $resonite-yellow, $soft) 66%,
-    mix(white, $resonite-green, $soft) 88%,
-    mix(white, $resonite-blue, $soft) 100%
-  );
+  $fill: #11151d;
+  $fill-hover: mix(white, $fill, 12%);
+
+  --resonite-oauth-angle: 0deg;
+  --resonite-btn-fill: #{$fill};
 
   color: #ffffff;
-  background-color: #4a148c;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.22)),
-    $resonite-gradient;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  text-shadow:
-    0 0 1px rgba(0, 0, 0, 0.55),
-    0 1px 2px rgba(0, 0, 0, 0.75),
-    0 2px 8px rgba(0, 0, 0, 0.35);
+  background-color: $fill;
+  background-image:
+    linear-gradient(var(--resonite-btn-fill), var(--resonite-btn-fill)),
+    conic-gradient(
+      from var(--resonite-oauth-angle),
+      $resonite-blue,
+      $resonite-purple,
+      $resonite-red,
+      $resonite-yellow,
+      $resonite-green,
+      $resonite-blue
+    );
+  background-origin: border-box;
+  background-clip: padding-box, border-box;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  animation: resonite-oauth-border-spin 5s linear infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    --resonite-oauth-angle: 135deg;
+  }
 
   &,
   &:visited {
@@ -54,28 +75,15 @@
       --resonite-oauth-login-icon-url,
       url("/plugins/disconite-resonite-oidc/resonite-login-icon.svg")
     );
-    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
-  }
-
-  &:hover,
-  &:focus-visible {
-    background-color: transparent;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
-      $resonite-gradient;
-    color: #ffffff;
-
-    .btn-social-title {
-      color: #ffffff;
-    }
   }
 
   &:hover {
-    filter: brightness(1.06);
+    --resonite-btn-fill: #{$fill-hover};
+    animation-duration: 3.25s;
   }
 
   &:focus-visible {
     outline: 2px solid $resonite-blue;
     outline-offset: 2px;
-    filter: none;
   }
 }
