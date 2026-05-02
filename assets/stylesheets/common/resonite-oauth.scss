@@ -22,11 +22,16 @@
   $fill: #11151d;
   $fill-hover: mix(white, $fill, 12%);
 
+  $border-w: 3px;
+
   --resonite-oauth-angle: 0deg;
   --resonite-btn-fill: #{$fill};
 
+  // .btn / .btn-social hover & focus apply background-color from the core mixin; that sits
+  // under background-image and fights the padding-box / border-box clip, which reads as a
+  // dirty or uneven rim. Keep the painted fill inside the gradient layers only.
   color: #ffffff;
-  background-color: $fill;
+  background-color: transparent;
   background-image:
     linear-gradient(var(--resonite-btn-fill), var(--resonite-btn-fill)),
     conic-gradient(
@@ -40,10 +45,12 @@
     );
   background-origin: border-box;
   background-clip: padding-box, border-box;
-  border: 2px solid transparent;
-  border-radius: 14px;
+  border: $border-w solid transparent;
+  // CSS max() — not Sass max(), so emit literal for the compiler
+  border-radius: unquote("max(14px, var(--d-border-radius))");
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   animation: resonite-oauth-border-spin 5s linear infinite;
+  isolation: isolate;
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -80,10 +87,29 @@
   &:hover {
     --resonite-btn-fill: #{$fill-hover};
     animation-duration: 3.25s;
+    background-color: transparent;
+    color: #ffffff;
+    border-color: transparent;
   }
 
   &:focus-visible {
     outline: 2px solid $resonite-blue;
     outline-offset: 2px;
+    background-color: transparent;
+    color: #ffffff;
+    border-color: transparent;
+
+    .d-icon {
+      color: #ffffff;
+    }
+  }
+
+  &[disabled],
+  &.disabled {
+    &:hover {
+      background-color: transparent;
+      color: #ffffff;
+      border-color: transparent;
+    }
   }
 }
