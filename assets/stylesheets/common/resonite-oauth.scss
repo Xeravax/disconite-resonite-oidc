@@ -1,6 +1,5 @@
-// Resonite login button — brand gradient (style guide swatches)
-// Blue #61d1fa → Purple #ab40f2 → Red #ff5050 → Yellow #f8f739 → Green #31eb34
-// Wordmark / label: #e1e1e0
+// Resonite login button — brand gradient (style guide hues), darkened for contrast.
+// Base stops: blue #61d1fa, purple #ab40f2, red #ff5050, yellow #f8f739, green #31eb34
 
 .btn-social.resonite {
   $resonite-blue: #61d1fa;
@@ -8,7 +7,6 @@
   $resonite-red: #ff5050;
   $resonite-yellow: #f8f739;
   $resonite-green: #31eb34;
-  $resonite-wordmark: #e1e1e0;
 
   $resonite-gradient: linear-gradient(
     135deg,
@@ -20,36 +18,55 @@
     $resonite-blue 100%
   );
 
-  color: $resonite-wordmark;
-  background-color: $resonite-purple;
-  background-image: $resonite-gradient;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  background-color: #4a148c;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)),
+    $resonite-gradient;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
 
   &,
   &:visited {
-    color: $resonite-wordmark;
+    color: #ffffff;
+  }
+
+  .btn-social-title {
+    color: #ffffff;
   }
 
   .d-icon,
   &.btn:hover .d-icon {
-    color: $resonite-wordmark;
-    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+    display: none;
+  }
+
+  &::before {
+    content: "";
+    flex-shrink: 0;
+    width: 1.1em;
+    height: 1.1em;
+    margin-right: 0.45em;
+    background: center / contain no-repeat;
+    background-image: var(
+      --resonite-oauth-login-icon-url,
+      url("/plugins/disconite-resonite-oidc/resonite-login-icon.svg")
+    );
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.45));
   }
 
   &:hover,
   &:focus-visible {
     background-color: transparent;
-    background-image: $resonite-gradient;
-    color: $resonite-wordmark;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)),
+      $resonite-gradient;
+    color: #ffffff;
 
-    .d-icon {
-      color: $resonite-wordmark;
+    .btn-social-title {
+      color: #ffffff;
     }
   }
 
   &:hover {
-    filter: brightness(1.07);
+    filter: brightness(1.06);
   }
 
   &:focus-visible {
