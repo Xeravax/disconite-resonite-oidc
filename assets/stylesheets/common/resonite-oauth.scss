@@ -1,0 +1,60 @@
+// Resonite login button — brand gradient (style guide swatches)
+// Blue #61d1fa → Purple #ab40f2 → Red #ff5050 → Yellow #f8f739 → Green #31eb34
+// Wordmark / label: #e1e1e0
+
+.btn-social.resonite {
+  $resonite-blue: #61d1fa;
+  $resonite-purple: #ab40f2;
+  $resonite-red: #ff5050;
+  $resonite-yellow: #f8f739;
+  $resonite-green: #31eb34;
+  $resonite-wordmark: #e1e1e0;
+
+  $resonite-gradient: linear-gradient(
+    135deg,
+    $resonite-blue 0%,
+    $resonite-purple 22%,
+    $resonite-red 44%,
+    $resonite-yellow 66%,
+    $resonite-green 88%,
+    $resonite-blue 100%
+  );
+
+  color: $resonite-wordmark;
+  background-color: $resonite-purple;
+  background-image: $resonite-gradient;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
+
+  &,
+  &:visited {
+    color: $resonite-wordmark;
+  }
+
+  .d-icon,
+  &.btn:hover .d-icon {
+    color: $resonite-wordmark;
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: transparent;
+    background-image: $resonite-gradient;
+    color: $resonite-wordmark;
+
+    .d-icon {
+      color: $resonite-wordmark;
+    }
+  }
+
+  &:hover {
+    filter: brightness(1.07);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $resonite-blue;
+    outline-offset: 2px;
+    filter: none;
+  }
+}

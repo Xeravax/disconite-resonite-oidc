@@ -11,6 +11,8 @@ enabled_site_setting :resonite_oauth_enabled
 register_svg_icon "disconite-resonite-oidc"
 register_svg_icon "resonite"
 
+register_asset "stylesheets/common/resonite-oauth.scss"
+
 require_relative "lib/resonite_oauth_faraday_formatter"
 require_relative "lib/resonite_asset_url"
 require_relative "lib/omniauth_open_id_connect"
@@ -73,4 +75,4 @@ on(:before_session_destroy) do |data|
   data[:redirect_url] = uri.to_s
 end
 
-auth_provider authenticator: ResoniteOAuthAuthenticator.new
+auth_provider authenticator: ResoniteOAuthAuthenticator.new, icon: "resonite"

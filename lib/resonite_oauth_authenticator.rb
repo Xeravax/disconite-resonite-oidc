@@ -11,10 +11,6 @@ class ResoniteOAuthAuthenticator < Auth::ManagedAuthenticator
     "resonite"
   end
 
-  def icon
-    "resonite"
-  end
-
   def can_revoke?
     SiteSetting.resonite_oauth_allow_association_change
   end
