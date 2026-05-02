@@ -1,5 +1,5 @@
-// Resonite login button — brand gradient (style guide hues), darkened for contrast.
-// Base stops: blue #61d1fa, purple #ab40f2, red #ff5050, yellow #f8f739, green #31eb34
+// Resonite login button — brand gradient (style guide hues), softened for readability.
+// Base stops mixed with white for lighter, less saturated backgrounds; label stays high-contrast.
 
 .btn-social.resonite {
   $resonite-blue: #61d1fa;
@@ -8,22 +8,26 @@
   $resonite-yellow: #f8f739;
   $resonite-green: #31eb34;
 
+  $soft: 48%;
   $resonite-gradient: linear-gradient(
     135deg,
-    $resonite-blue 0%,
-    $resonite-purple 22%,
-    $resonite-red 44%,
-    $resonite-yellow 66%,
-    $resonite-green 88%,
-    $resonite-blue 100%
+    mix(white, $resonite-blue, $soft) 0%,
+    mix(white, $resonite-purple, $soft) 22%,
+    mix(white, $resonite-red, $soft) 44%,
+    mix(white, $resonite-yellow, $soft) 66%,
+    mix(white, $resonite-green, $soft) 88%,
+    mix(white, $resonite-blue, $soft) 100%
   );
 
   color: #ffffff;
   background-color: #4a148c;
-  background-image: linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)),
+  background-image: linear-gradient(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.22)),
     $resonite-gradient;
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  text-shadow:
+    0 0 1px rgba(0, 0, 0, 0.55),
+    0 1px 2px rgba(0, 0, 0, 0.75),
+    0 2px 8px rgba(0, 0, 0, 0.35);
 
   &,
   &:visited {
@@ -56,7 +60,7 @@
   &:hover,
   &:focus-visible {
     background-color: transparent;
-    background-image: linear-gradient(rgba(0, 0, 0, 0.38), rgba(0, 0, 0, 0.38)),
+    background-image: linear-gradient(rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.18)),
       $resonite-gradient;
     color: #ffffff;
 
