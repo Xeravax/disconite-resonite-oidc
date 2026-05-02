@@ -1,4 +1,4 @@
-// Resonite login button — card-like shape, animated gradient border (conic + @property).
+// Resonite login button — animated gradient ring with inset fill (::after) so ring width is explicit.
 
 @property --resonite-oauth-angle {
   syntax: "<angle>";
@@ -22,35 +22,43 @@
   $fill: #11151d;
   $fill-hover: mix(white, $fill, 12%);
 
-  $border-w: 3px;
+  // Visible gradient frame; larger = more conic, smaller dark interior
+  $ring: 6px;
 
   --resonite-oauth-angle: 0deg;
   --resonite-btn-fill: #{$fill};
 
-  // .btn / .btn-social hover & focus apply background-color from the core mixin; that sits
-  // under background-image and fights the padding-box / border-box clip, which reads as a
-  // dirty or uneven rim. Keep the painted fill inside the gradient layers only.
+  position: relative;
+  isolation: isolate;
+
+  // .btn hover/focus background-color would sit under images; keep transparent
   color: #ffffff;
   background-color: transparent;
-  background-image:
-    linear-gradient(var(--resonite-btn-fill), var(--resonite-btn-fill)),
-    conic-gradient(
-      from var(--resonite-oauth-angle),
-      $resonite-blue,
-      $resonite-purple,
-      $resonite-red,
-      $resonite-yellow,
-      $resonite-green,
-      $resonite-blue
-    );
-  background-origin: border-box;
-  background-clip: padding-box, border-box;
-  border: $border-w solid transparent;
-  // CSS max() — not Sass max(), so emit literal for the compiler
+  background-image: conic-gradient(
+    from var(--resonite-oauth-angle),
+    $resonite-blue,
+    $resonite-purple,
+    $resonite-red,
+    $resonite-yellow,
+    $resonite-green,
+    $resonite-blue
+  );
+  border: 0;
+  // CSS max() — not Sass max()
   border-radius: unquote("max(14px, var(--d-border-radius))");
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
   animation: resonite-oauth-border-spin 5s linear infinite;
-  isolation: isolate;
+
+  // z-index: -1 sits above the button background but below in-flow label (::before + text)
+  &::after {
+    content: "";
+    position: absolute;
+    inset: $ring;
+    border-radius: unquote("max(8px, calc(var(--d-border-radius) - #{$ring}))");
+    background: var(--resonite-btn-fill);
+    z-index: -1;
+    pointer-events: none;
+  }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
@@ -63,6 +71,8 @@
   }
 
   .btn-social-title {
+    position: relative;
+    z-index: 1;
     color: #ffffff;
   }
 
@@ -73,6 +83,8 @@
 
   &::before {
     content: "";
+    position: relative;
+    z-index: 1;
     flex-shrink: 0;
     width: 1.1em;
     height: 1.1em;
@@ -89,7 +101,7 @@
     animation-duration: 3.25s;
     background-color: transparent;
     color: #ffffff;
-    border-color: transparent;
+    border: 0;
   }
 
   &:focus-visible {
@@ -97,7 +109,7 @@
     outline-offset: 2px;
     background-color: transparent;
     color: #ffffff;
-    border-color: transparent;
+    border: 0;
 
     .d-icon {
       color: #ffffff;
@@ -109,7 +121,7 @@
     &:hover {
       background-color: transparent;
       color: #ffffff;
-      border-color: transparent;
+      border: 0;
     }
   }
 }
