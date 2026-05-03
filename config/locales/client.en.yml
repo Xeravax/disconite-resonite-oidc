@@ -13,5 +13,5 @@ en:
     login:
       resonite:
         name: "Resonite"
-        title: "with Resonite"
+        title: "Login with Resonite"
         message: "Authenticating with Resonite"
