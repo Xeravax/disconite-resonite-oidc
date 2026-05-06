@@ -22,8 +22,8 @@
   $fill: #11151d;
   $fill-hover: mix(white, $fill, 12%);
 
-  // Visible gradient frame; larger = more conic, smaller dark interior
-  $ring: 3px;
+  // Match Discourse .btn / .btn-social effective border (1px via --d-button-border)
+  $ring: 1px;
 
   --resonite-oauth-angle: 0deg;
   --resonite-btn-fill: #{$fill};
@@ -54,7 +54,7 @@
     content: "";
     position: absolute;
     inset: $ring;
-    border-radius: unquote("max(11px, calc(var(--d-border-radius) - #{$ring}))");
+    border-radius: unquote("max(13px, calc(var(--d-border-radius) - #{$ring}))");
     background: var(--resonite-btn-fill);
     z-index: -1;
     pointer-events: none;
